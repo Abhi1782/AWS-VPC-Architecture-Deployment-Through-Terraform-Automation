@@ -61,3 +61,10 @@ This project covers the complete workflow for setting up AWS infrastructure auto
     sudo apt-get update
     sudo apt-get install terraform -y
 
+## ✔ Verify
+
+    terraform -version
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
