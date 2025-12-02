@@ -8,10 +8,10 @@ This project covers the complete workflow of setting up AWS infrastructure autom
 
 ## 🛠 Instructions
     
-   Go to EC2 → Launch Instance
-   💻 AMI: Ubuntu Server 22.04 LTS
-   ⚙ Instance Type: t2.micro
-   🔐 Key Pair: Create or use existing
-   🌐 Network: Default VPC
-   🛡 Security Group: Allow SSH (22) from your IP
-   ▶ Click Launch
+  1) Go to EC2 → Launch Instance
+  2) 💻 AMI: Ubuntu Server 22.04 LTS
+  3) ⚙ Instance Type: t2.micro
+  4) 🔐 Key Pair: Create or use existing
+  5) 🌐 Network: Default VPC
+  6) 🛡 Security Group: Allow SSH (22) from your IP
+  7) ▶ Click Launch
