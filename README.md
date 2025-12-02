@@ -15,3 +15,6 @@ This project covers the complete workflow of setting up AWS infrastructure autom
   5) 🌐 Network: Default VPC
   6) 🛡 Security Group: Allow SSH (22) from your IP
   7) ▶ Click Launch
+
+### ➤ Connect via SSH
+     ssh -i your-key.pem ubuntu@<EC2-PUBLIC-IP>
