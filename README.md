@@ -101,51 +101,139 @@ C) Region (ap-south-1)
 
 ### 📄 variables.tf
 
-    variable "project_name" {}
-    variable "vpc_cidr" {}
-    variable "public_subnet_cidr" {}
-    variable "private_subnet_cidr" {}
+    variable "aws_region" {
+      description = "AWS region where resources will be created"
+      type        = string
+      default     = "ap-south-1"
+    }
+    
+    variable "project_name" {
+      description = "Name prefix used for tagging resources"
+      type        = string
+    }
+    
+    variable "vpc_cidr" {
+      description = "CIDR block for the VPC"
+      type        = string
+    }
+    
+    variable "public_subnet_cidr" {
+      description = "CIDR block for the public subnet"
+      type        = string
+    }
 
 ### 📄 main.tf
 
-      resource "aws_vpc" "main" {
-      cidr_block = var.vpc_cidr
+    # -----------------------------
+    # VPC
+    # -----------------------------
+    resource "aws_vpc" "main" {
+      cidr_block           = var.vpc_cidr
+      enable_dns_support   = true
+      enable_dns_hostnames = true
     
       tags = {
         Name = "${var.project_name}-vpc"
       }
     }
     
+    # -----------------------------
+    # Internet Gateway
+    # -----------------------------
     resource "aws_internet_gateway" "igw" {
       vpc_id = aws_vpc.main.id
+    
+      tags = {
+        Name = "${var.project_name}-igw"
+      }
     }
     
+    # -----------------------------
+    # Public Subnet
+    # -----------------------------
     resource "aws_subnet" "public" {
-      vpc_id     = aws_vpc.main.id
-      cidr_block = var.public_subnet_cidr
+      vpc_id                  = aws_vpc.main.id
+      cidr_block              = var.public_subnet_cidr
       map_public_ip_on_launch = true
+      availability_zone       = "${var.aws_region}a"
     
       tags = {
         Name = "${var.project_name}-public-subnet"
       }
     }
     
-    resource "aws_subnet" "private" {
-      vpc_id     = aws_vpc.main.id
-      cidr_block = var.private_subnet_cidr
+    # -----------------------------
+    # Public Route Table
+    # -----------------------------
+    resource "aws_route_table" "public_rt" {
+      vpc_id = aws_vpc.main.id
     
       tags = {
-        Name = "${var.project_name}-private-subnet"
+        Name = "${var.project_name}-public-rt"
       }
     }
+    
+    # Route from Public RT -> Internet via IGW
+    resource "aws_route" "public_internet_route" {
+      route_table_id         = aws_route_table.public_rt.id
+      destination_cidr_block = "0.0.0.0/0"
+      gateway_id             = aws_internet_gateway.igw.id
+    }
+    
+    # Associate Public Subnet with Public Route Table
+    resource "aws_route_table_association" "public_assoc" {
+      subnet_id      = aws_subnet.public.id
+      route_table_id = aws_route_table.public_rt.id
+    }
+
 
 ## 📄 outputs.tf
 
     output "vpc_id" {
-      value = aws_vpc.main.id
+      description = "ID of the created VPC"
+      value       = aws_vpc.main.id
+    }
+    
+    output "public_subnet_id" {
+      description = "ID of the public subnet"
+      value       = aws_subnet.public.id
+    }
+    
+    output "public_route_table_id" {
+      description = "ID of the public route table"
+      value       = aws_route_table.public_rt.id
     }
 
-======
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 🟢 Step 8 — Initialize Terraform
+
+    terraform init
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 🔵 Step 9 — Validate Terraform
+
+    terraform validate
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 🟣 Step 10 — Apply Terraform (Create VPC)
+
+    terraform apply -auto-approve
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 🟠 Step 11 — Destroy Resources (If Needed)
+
+    terraform destroy -auto-approve
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🎉 Project Completed
+
+You have successfully deployed an AWS VPC using Terraform automation.
 
 
 
