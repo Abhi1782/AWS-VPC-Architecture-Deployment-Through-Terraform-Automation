@@ -34,8 +34,8 @@ This project covers the complete workflow for setting up AWS infrastructure auto
 
  From the IAM user:
  1) Copy/download:
-    🔑 Access Key ID
-    🕵️ Secret Access Key
+    **.**🔑 Access Key ID
+    **.**🕵️ Secret Access Key
  2) Keep these safe — used for AWS authentication in Terraform
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
