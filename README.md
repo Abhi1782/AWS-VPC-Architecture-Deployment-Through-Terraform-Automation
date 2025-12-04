@@ -109,35 +109,43 @@ C) Region (ap-south-1)
 ### 📄 main.tf
 
       resource "aws_vpc" "main" {
-        cidr_block = var.vpc_cidr
-      
-        tags = {
-          Name = "${var.project_name}-vpc"
-        }
+      cidr_block = var.vpc_cidr
+    
+      tags = {
+        Name = "${var.project_name}-vpc"
       }
-      
-      resource "aws_internet_gateway" "igw" {
-        vpc_id = aws_vpc.main.id
+    }
+    
+    resource "aws_internet_gateway" "igw" {
+      vpc_id = aws_vpc.main.id
+    }
+    
+    resource "aws_subnet" "public" {
+      vpc_id     = aws_vpc.main.id
+      cidr_block = var.public_subnet_cidr
+      map_public_ip_on_launch = true
+    
+      tags = {
+        Name = "${var.project_name}-public-subnet"
       }
-      
-      resource "aws_subnet" "public" {
-        vpc_id     = aws_vpc.main.id
-        cidr_block = var.public_subnet_cidr
-        map_public_ip_on_launch = true
-      
-        tags = {
-          Name = "${var.project_name}-public-subnet"
-        }
+    }
+    
+    resource "aws_subnet" "private" {
+      vpc_id     = aws_vpc.main.id
+      cidr_block = var.private_subnet_cidr
+    
+      tags = {
+        Name = "${var.project_name}-private-subnet"
       }
-      
-      resource "aws_subnet" "private" {
-        vpc_id     = aws_vpc.main.id
-        cidr_block = var.private_subnet_cidr
-      
-        tags = {
-          Name = "${var.project_name}-private-subnet"
-        }
-      }
+    }
+
+## 📄 outputs.tf
+
+    output "vpc_id" {
+      value = aws_vpc.main.id
+    }
+
+======
 
 
 
